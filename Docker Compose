@@ -1,0 +1,72 @@
+To install docker, I followed the website given in class to install Docker in Debian since I am installing it in a Kali VM. [Debian | Docker Docs](https://docs.docker.com/engine/install/debian/)
+
+# Uninstalling Docker
+-  Uninstall old versions of Docker by running `sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-doc podman-docker containerd runc | cut -f1)`
+# Installation of Docker
+### Setting up the apt repository
+```bash
+# Add Docker's official GPG key:
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+```
+And replace $VERSION_CODENAME with book worm  corresponding to the Debian release
+### Installing docker packages
+`sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin` to install the latest version of Docker
+
+`sudo systemctl status docker` to see if it is running and active![[Pasted image 20251116150740.png]]
+`sudo docker run hello-world` to see if Docker is running correctly and should output this message![[Pasted image 20251116150943.png]]
+# Installation of Application
+Installation of Uptime Kuma which is an uptime monitoring of sites 
+[selfhosted-apps-docker/uptime-kuma at master · DoTheEvo/selfhosted-apps-docker](https://github.com/DoTheEvo/selfhosted-apps-docker/tree/master/uptime-kuma)
+
+`mkdir uptimekuma` and `cd uptimekuma` to make and enter the directory.
+
+
+`nano docker-compose.yml` to make a file and paste the following text into it.
+
+`services:`
+  `uptimekuma:`
+    `image: louislam/uptime-kuma:1`
+    `container_name: uptimekuma`
+    `hostname: uptimekuma`
+    `restart: unless-stopped`
+    `ports:`
+      `- "3001:3001"`
+    `volumes:`
+      `- ./uptimekuma_data:/app/data`
+
+`networks:`
+  `default:`
+    `name: $DOCKER_MY_NETWORK`
+    `external: true`      
+
+
+
+
+`nano .env` to make the env file and paste the following
+
+# `GENERAL`
+`TZ=Europe/Bratislava`
+`DOCKER_MY_NETWORK=caddy_net`
+
+
+`sudo docker compose up -d` to start the application
+
+Go http://localhost:3001 to visit the site
+![[Pasted image 20251116171055.png]]
+
+![[Pasted image 20251116171153.png]]
