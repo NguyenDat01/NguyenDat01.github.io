@@ -1,3 +1,4 @@
 # NguyenDat01.github.io
 
-Arch Install.md
+[Arch Install.md
+](https://github.com/NguyenDat01/NguyenDat01.github.io/blob/main/Arch%20Install.md)
